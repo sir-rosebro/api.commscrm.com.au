@@ -1,0 +1,8 @@
+{
+  "name": "api.commscrm.com.au",
+  "version": "1.0.0",
+  "main": "app.js",
+  "repository": "https://github.com/sir-rosebro/api.commscrm.com.au.git",
+  "author": "Saroj Bhattarai",
+  "license": "MIT"
+}
