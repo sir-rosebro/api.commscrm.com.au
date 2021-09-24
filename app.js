@@ -1,11 +1,16 @@
 import express from "express";
 import dotenv from "dotenv";
+import createError from 'http-errors';
+const cors = require('cors');
 
 import routes from "./routes";
 
 const app = express();
 dotenv.config();
 
+app.use(cors({
+  origin: '*'
+}));
 app.use(express.json());
 
 const { PORT } = process.env;

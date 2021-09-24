@@ -1,11 +1,10 @@
 import { customerService } from "../services";
 
-const create = async (req, res) => {
+const signIn = async(req, res) => {
   try {
-
-    const resource = await customerService.add(req.body);
-
-    const { dataValues } = await customerService.findOne({ id: resource.id });
+    console.log(req.body);
+    const {email, password} = req.body;
+    const { dataValues } = await customerService.findOne({ email, password });
     return res.status(200).send({
       status: "OK",
       customer: dataValues,
@@ -14,10 +13,9 @@ const create = async (req, res) => {
     console.log({ error });
     return res.status(500).send({
       status: "ERROR",
-      message: "There was problem registering customer.",
+      message: "Credentials enered are not correct!",
     });
   }
-};
+}
 
-
-export { create};
+export { signIn };
