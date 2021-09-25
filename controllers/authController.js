@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import { customerService } from "../services";
+import { customerService, authService } from "../services";
+
 
 const signIn = async (req, res) => {
   try {
@@ -57,4 +58,32 @@ const signIn = async (req, res) => {
   }
 };
 
-export { signIn };
+const resetPassword = async (req, res) => {
+  try {
+    const {email} = req.body;
+    const existingUserWithEmail = await customerService.findOne({ email });
+
+    if (!existingUserWithEmail) {
+      return res.status(500).send({
+        status: "ERROR",
+        message: "Could not find the user with email address !",
+      });
+    } else {
+      const resetPasswordToken =  await authService.generateResetPasswordToken(existingUserWithEmail.email, existingUserWithEmail.id);
+      return res.status(200).send({
+        status: "OK",
+        token: resetPasswordToken,
+      });
+    }
+  } catch(error) {
+    console.log({ error });
+    return res.status(500).send({
+      status: "ERROR",
+      message: "Something has gone wrong!!",
+    });
+  }
+}
+
+
+
+export { signIn, resetPassword };

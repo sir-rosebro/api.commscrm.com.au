@@ -5,10 +5,11 @@ import { authController } from "../controllers";
 
 const router = express.Router();
 
-const {signIn} = authController;
+const {signIn, resetPassword} = authController;
 const { create } = customerController;
 
 router.post("/auth/sign-up", create);
 router.post("/auth/signin", signIn);
+router.post("/auth/reset-password", resetPassword);
 
 export default router;

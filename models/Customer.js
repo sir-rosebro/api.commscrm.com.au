@@ -18,10 +18,11 @@ module.exports = (sequelize, DataTypes) => {
       shippingAddress: DataTypes.STRING,
       accountNumber: DataTypes.STRING,
       isApproved: DataTypes.BOOLEAN,
-    },
-    {
-      tableName: "customer",
-    }
+      resetPasswordToken: DataTypes.STRING,
+      },
+      {
+        tableName: "customer",
+      }
   );
 
   schema.associate = function (models) {};
