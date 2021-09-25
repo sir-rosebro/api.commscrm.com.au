@@ -1,4 +1,3 @@
-
 "use strict";
 module.exports = (sequelize, DataTypes) => {
   const schema = sequelize.define(
@@ -7,16 +6,18 @@ module.exports = (sequelize, DataTypes) => {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
       },
       password: DataTypes.STRING,
-      businessName:DataTypes.STRING,
+      businessName: DataTypes.STRING,
       contactName: DataTypes.STRING,
       contactNumber: DataTypes.STRING,
-      mobile:DataTypes.STRING, 
-      email:DataTypes.STRING,
-      billingAddress:DataTypes.STRING,
-      shippingAddress:DataTypes.STRING, 
-      accountNumber:DataTypes.STRING,
+      mobile: DataTypes.STRING,
+      email: DataTypes.STRING,
+      billingAddress: DataTypes.STRING,
+      shippingAddress: DataTypes.STRING,
+      accountNumber: DataTypes.STRING,
+      isApproved: DataTypes.BOOLEAN,
     },
     {
       tableName: "customer",
@@ -26,4 +27,3 @@ module.exports = (sequelize, DataTypes) => {
   schema.associate = function (models) {};
   return schema;
 };
-

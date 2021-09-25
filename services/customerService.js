@@ -1,10 +1,10 @@
-//services/customerService.js
-
+import bcrypt from "bcrypt";
 import { Customer } from "../models";
 
 const add = (data) => {
- 
-  let customer = new Customer(data);
+  const hashedPassword = bcrypt.hashSync(data.password, 10);
+  const { id, ...customerData } = { ...data, password: hashedPassword };
+  let customer = new Customer(customerData);
   return customer.save();
 };
 

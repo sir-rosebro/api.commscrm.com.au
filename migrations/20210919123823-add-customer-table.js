@@ -1,4 +1,3 @@
-
 "use strict";
 
 module.exports = {
@@ -14,7 +13,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       businessName: {
-        type:Sequelize.STRING
+        type: Sequelize.STRING,
       },
       contactName: {
         type: Sequelize.STRING,
@@ -37,14 +36,18 @@ module.exports = {
       accountNumber: {
         type: Sequelize.STRING,
       },
+      isApproved: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
 
