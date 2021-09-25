@@ -70,6 +70,7 @@ const resetPassword = async (req, res) => {
       });
     } else {
       const resetPasswordToken =  await authService.generateResetPasswordToken(existingUserWithEmail.email, existingUserWithEmail.id);
+      
       return res.status(200).send({
         status: "OK",
         token: resetPasswordToken,

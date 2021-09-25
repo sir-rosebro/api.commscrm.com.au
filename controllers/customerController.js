@@ -1,4 +1,5 @@
 import { customerService } from "../services";
+import sendMail from '../helper/sendMail';
 
 const create = async (req, res) => {
   try {
@@ -13,7 +14,13 @@ const create = async (req, res) => {
     }
 
     const resource = await customerService.add(req.body);
-
+    const mailObj = {
+      from:'noreply@commscrm.com.au',
+      to:req.body.email,
+      subject:'Registration Successful!!',
+      message:'You have been registerd'
+    };
+    await sendMail(mailObj);
     const { dataValues } = await customerService.findOne({ id: resource.id });
     return res.status(200).send({
       status: "OK",
