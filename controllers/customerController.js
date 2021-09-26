@@ -15,10 +15,12 @@ const create = async (req, res) => {
 
     const resource = await customerService.add(req.body);
     const mailObj = {
-      from:'noreply@commscrm.com.au',
       to:req.body.email,
-      subject:'Registration Successful!!',
-      message:'You have been registerd'
+      template:'registerCustomer',
+      locals:{
+        contactName:req.body.contactName,
+        host:process.env.CUSTOMER_FRONTEND_HOST
+      }
     };
     await sendMail(mailObj);
     const { dataValues } = await customerService.findOne({ id: resource.id });

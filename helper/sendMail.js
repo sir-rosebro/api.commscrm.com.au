@@ -1,23 +1,31 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
+import Email from 'email-templates';
 
-const sendEmail = async (mailObj) => {
-   const { from, to, subject, message } = mailObj;
-    const transporter = nodemailer.createTransport({
+const email = new Email({
+    message: {
+        from: process.env.SEND_EMAIL,
+        name:process.env.SEND_EMAIL_NAME,
+      },
+    send:true,
+    transport: nodemailer.createTransport({
         host: process.env.MAIL_HOST,
         port: process.env.MAIL_PORT,
         auth: {
             user: process.env.MAIL_USERNAME,
             pass: process.env.MAIL_PASSWORD
         }
+    }),
+});
+
+const sendEmail = async ({template, to, locals}) => {
+
+    return  await email.send({
+        template,
+        locals,
+        message: {
+            to
+        }
     });
-    const mailOptions = {
-        from: from, 
-        to: to, 
-        subject: subject, 
-        text: message, 
-    };
-    
-    await transporter.sendMail(mailOptions);
 }
 
 export default sendEmail;
