@@ -69,8 +69,28 @@ const getCustomers = async (req, res) => {
     console.log({ error });
     return res.status(500).send({
       status: "ERROR",
-      message: "There was problem registering customer.",
+      message: "There is problem fetching customers data.",
     });
   }
 };
-export { create, getCustomers };
+
+const approveCustomer = async(req, res) => {
+
+  try {
+   
+    
+  
+    return res.status(200).send({
+      status: "OK",
+      user:1, 
+    });
+      
+    } catch (error) {
+      console.log({ error });
+      return res.status(500).send({
+        status: "ERROR",
+        message: "There was problem approving customer.",
+      });
+    }
+}
+export { create, getCustomers, approveCustomer };
