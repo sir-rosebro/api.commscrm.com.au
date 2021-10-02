@@ -11,7 +11,9 @@ const shouldLoggedIn = (req, res, next) => {
     }
     try {
         const decoded = jwt.verify(token, process.env.TOKEN_SECRECT); 
-        req.user = {decoded};
+        const { id, email, isAdmin} = decoded;
+        req.user = {id, email, isAdmin};
+        console.log(req.user);
         next();
     } catch(error) {
             console.log({ error });

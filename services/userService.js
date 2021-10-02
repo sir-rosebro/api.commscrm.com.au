@@ -21,6 +21,7 @@ const getAll = async () => {
 };
 
 const update = async (data) => {
+  console.log(data.id);
   const { dataValues } = await findOne({ id: data.id });
 
   return User.update(

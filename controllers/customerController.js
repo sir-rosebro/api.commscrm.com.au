@@ -1,4 +1,4 @@
-import { customerService, userService } from "../services";
+import { userService } from "../services";
 import sendMail from '../helper/sendMail';
 
 const create = async (req, res) => {
@@ -59,7 +59,6 @@ const getCustomers = async (req, res) => {
     )
   });
   
-
   return res.status(200).send({
     status: "OK",
     customers:customerfilteredData, 
@@ -77,12 +76,12 @@ const getCustomers = async (req, res) => {
 const approveCustomer = async(req, res) => {
 
   try {
-   
-    
+    const customerId = req.params.id;
+    await userService.update({id:customerId, isApproved:true});
   
     return res.status(200).send({
       status: "OK",
-      user:1, 
+      customerId, 
     });
       
     } catch (error) {
