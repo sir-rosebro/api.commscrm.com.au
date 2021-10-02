@@ -1,4 +1,4 @@
-import { customerService } from "../services";
+import { customerService, userService } from "../services";
 import sendMail from '../helper/sendMail';
 
 const create = async (req, res) => {
@@ -42,4 +42,35 @@ const create = async (req, res) => {
   }
 };
 
-export { create };
+const getCustomers = async (req, res) => {
+  try {
+   
+  const users = await userService.getAll();
+  const customers = (users.rows).filter( user => !user.isAdmin);
+  const customerfilteredData = customers.map( customer => {
+    const {email, contactName, billingAddress, isApproved} = customer;
+    return (
+      {
+        email,
+        name:contactName,
+        address:billingAddress,
+        isApproved
+      }
+    )
+  });
+  
+
+  return res.status(200).send({
+    status: "OK",
+    customers:customerfilteredData, 
+  });
+    
+  } catch (error) {
+    console.log({ error });
+    return res.status(500).send({
+      status: "ERROR",
+      message: "There was problem registering customer.",
+    });
+  }
+};
+export { create, getCustomers };

@@ -2,14 +2,14 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import sendMail from '../helper/sendMail';
 
-import { customerService, authService } from "../services";
+import { userService, authService } from "../services";
 
 
 const signIn = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const existingUserWithEmail = await customerService.findOne({ email });
+    const existingUserWithEmail = await userService.findOne({ email });
 
     if (!existingUserWithEmail) {
       return res.status(500).send({
@@ -29,7 +29,7 @@ const signIn = async (req, res) => {
       password,
       existingUserWithEmail.password
     );
-
+    console.log(isValidPassword);  
     if (!isValidPassword) {
       return res.status(500).send({
         status: "ERROR",
@@ -41,6 +41,7 @@ const signIn = async (req, res) => {
       {
         id: existingUserWithEmail.id,
         email: existingUserWithEmail.email,
+        isAdmin:existingUserWithEmail.isAdmin
       },
       process.env.TOKEN_SECRECT,
       { expiresIn: 60 * 60 * 60 * 24 * 7 }
@@ -48,7 +49,12 @@ const signIn = async (req, res) => {
 
     return res.status(200).send({
       status: "OK",
-      token: token,
+      user: {
+        id: existingUserWithEmail.id,
+        email: existingUserWithEmail.email,
+        fullName: existingUserWithEmail.businessName,
+        token: token,
+      },
     });
   } catch (error) {
     console.log({ error });
@@ -59,10 +65,53 @@ const signIn = async (req, res) => {
   }
 };
 
+const signUp = async (req, res) => {
+  try {
+    const existingUser = await userService.findOne({
+      email: req.body.email,
+    });
+    if (existingUser) {
+      return res.status(500).send({
+        status: "ERROR",
+        message: "This email address is already used.",
+      });
+    }
+
+    const resource = await userService.add(req.body);
+    const mailObj = {
+      to:req.body.email,
+      template:'registerCustomer',
+      locals:{
+        contactName:req.body.contactName,
+        host:process.env.CUSTOMER_FRONTEND_HOST
+      }
+    };
+    await sendMail(mailObj);
+    const { dataValues } = await userService.findOne({ id: resource.id });
+    return res.status(200).send({
+      status: "OK",
+      user: {
+        id: dataValues.id,
+        email: dataValues.email,
+        businessName: dataValues.businessName,
+        contactName: dataValues.businessName,
+      },
+    });
+  } catch (error) {
+    console.log({ error });
+    return res.status(500).send({
+      status: "ERROR",
+      message: "There was problem registering customer.",
+    });
+  }
+};
+
 const forgotPassword = async (req, res) => {
   try {
     const {email} = req.body;
-    const existingUserWithEmail = await customerService.findOne({ email });
+    console.log(req.body);
+    const existingUserWithEmail = await userService.findOne({ email });
+    console.log(existingUserWithEmail);
     const {id, password, createdAt} = existingUserWithEmail;
     if (!existingUserWithEmail) {
       return res.status(500).send({
@@ -98,9 +147,10 @@ const forgotPassword = async (req, res) => {
 
 
 const resetPassword = async (req, res) => {
+  console.log(req.body);
   try {
     const {email, newPassword, token} = req.body;
-    const existingUserWithEmail = await customerService.findOne({ email });
+    const existingUserWithEmail = await userService.findOne({ email });
 
     if (!existingUserWithEmail) {
       return res.status(500).send({
@@ -129,7 +179,7 @@ const resetPassword = async (req, res) => {
     })
     
     const newHashedPassword =  bcrypt.hashSync(newPassword, 10)
-    await customerService.update({id, password:newHashedPassword, resetPasswordToken:null});
+    await userService.update({id, password:newHashedPassword, resetPasswordToken:null});
     
     return res.status(200).send({
       status: "OK",
@@ -145,6 +195,9 @@ const resetPassword = async (req, res) => {
   }
 }
 
-
-
-export { signIn, forgotPassword, resetPassword };
+export { 
+  signIn, 
+  forgotPassword, 
+  resetPassword,
+  signUp 
+};

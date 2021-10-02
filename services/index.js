@@ -1,8 +1,8 @@
 
-import * as customerService from './customerService';
+import * as userService from './userService';
 import * as authService from './authService';
 
 export { 
-    customerService,
+    userService,
     authService
 };

@@ -1,21 +1,21 @@
 import bcrypt from "bcrypt";
-import { Customer } from "../models";
+import { User } from "../models";
 
 const add = (data) => {
   const hashedPassword = bcrypt.hashSync(data.password, 10);
-  const { id, ...customerData } = { ...data, password: hashedPassword };
-  let customer = new Customer(customerData);
-  return customer.save();
+  const { id, ...userData } = { ...data, password: hashedPassword };
+  let user = new User(userData);
+  return user.save();
 };
 
 const findOne = (filter) => {
-  return Customer.findOne({
+  return User.findOne({
     where: filter,
   });
 };
 
 const getAll = async () => {
-  return await Customer.findAndCountAll({
+  return await User.findAndCountAll({
     unique: true,
   });
 };
@@ -23,14 +23,14 @@ const getAll = async () => {
 const update = async (data) => {
   const { dataValues } = await findOne({ id: data.id });
 
-  return Customer.update(
+  return User.update(
     { ...dataValues, ...data },
     { where: { id: data.id } }
   );
 };
 
 const del = async (id) => {
-  return await Customer.destroy({ where: { id } });
+  return await User.destroy({ where: { id } });
 };
 
 export { add, findOne, getAll, update, del };

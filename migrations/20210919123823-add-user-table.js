@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable("customer", {
+    return queryInterface.createTable("user", {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -11,12 +11,14 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       businessName: {
         type: Sequelize.STRING,
       },
       contactName: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       contactNumber: {
         type: Sequelize.STRING,
@@ -42,6 +44,13 @@ module.exports = {
       },
       resetPasswordToken: {
         type:Sequelize.STRING,
+      },
+      isAdmin: {
+        type:Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      profileImg: {
+        type:Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

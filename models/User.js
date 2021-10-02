@@ -1,7 +1,7 @@
 "use strict";
 module.exports = (sequelize, DataTypes) => {
   const schema = sequelize.define(
-    "Customer",
+    "User",
     {
       id: {
         type: DataTypes.INTEGER,
@@ -19,9 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       accountNumber: DataTypes.STRING,
       isApproved: DataTypes.BOOLEAN,
       resetPasswordToken: DataTypes.STRING,
+      isAdmin: DataTypes.BOOLEAN,
+      profileImg: DataTypes.STRING,
       },
       {
-        tableName: "customer",
+        tableName: "user",
       }
   );
 
