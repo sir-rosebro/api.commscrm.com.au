@@ -9,6 +9,6 @@ const router = express.Router();
 const { getCustomers, approveCustomer } = customerController;
 
 router.get("/all", getCustomers);
-router.get("/approve-customer/:id",[shouldLoggedIn, adminOnly], approveCustomer);
+router.put("/approve-customer/:id",[shouldLoggedIn, adminOnly], approveCustomer);
 
 export default router;

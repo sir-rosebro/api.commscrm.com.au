@@ -2,7 +2,8 @@ import jwt from 'jsonwebtoken';
 
 const shouldLoggedIn = (req, res, next) => {
 
-    const token = req.header('x-auth-header');
+    const token = req.header('x-access-token');
+    console.log(token);
     if(!token) {
         res.status(401).json({
             status:'ERROR',

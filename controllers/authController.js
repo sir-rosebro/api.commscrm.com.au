@@ -109,16 +109,15 @@ const signUp = async (req, res) => {
 const forgotPassword = async (req, res) => {
   try {
     const {email} = req.body;
-    console.log(req.body);
     const existingUserWithEmail = await userService.findOne({ email });
-    console.log(existingUserWithEmail);
-    const {id, password, createdAt} = existingUserWithEmail;
     if (!existingUserWithEmail) {
+      throw Error();
       return res.status(500).send({
         status: "ERROR",
         message: "Could not find the user with email address !",
       });
     } else {
+      const {id, password, createdAt} = existingUserWithEmail;
       const resetPasswordToken =  await authService.generateResetPasswordToken(id, password, email, createdAt);
       const mailObj = {
         to:email,
