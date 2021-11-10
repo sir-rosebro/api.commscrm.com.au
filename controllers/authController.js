@@ -86,15 +86,17 @@ const signUp = async (req, res) => {
         host:process.env.CUSTOMER_FRONTEND_HOST
       }
     };
-    await sendMail(mailObj);
+    //await sendMail(mailObj);
     const { dataValues } = await userService.findOne({ id: resource.id });
+    const {id, email, contactName, billingAddress, isApproved} = dataValues;
     return res.status(200).send({
       status: "OK",
       user: {
-        id: dataValues.id,
-        email: dataValues.email,
-        businessName: dataValues.businessName,
-        contactName: dataValues.businessName,
+        id,
+        email,
+        contactName,
+        billingAddress,
+        isApproved
       },
     });
   } catch (error) {

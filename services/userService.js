@@ -14,14 +14,16 @@ const findOne = (filter) => {
   });
 };
 
-const getAll = async () => {
+const getAll = async (condition, limit, offset) => {
   return await User.findAndCountAll({
     unique: true,
+    where: condition,
+    limit,
+    offset
   });
 };
 
 const update = async (data) => {
-  console.log(data.id);
   const { dataValues } = await findOne({ id: data.id });
 
   return User.update(

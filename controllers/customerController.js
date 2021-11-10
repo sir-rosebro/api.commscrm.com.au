@@ -43,33 +43,59 @@ const create = async (req, res) => {
   }
 };
 
+const update = async (req, res) => {
+ 
+  try {
+    const existingUser = await userService.findOne({
+      id: req.params.id,
+    });
+    if (!existingUser) {
+      return res.status(500).send({
+        status: "ERROR",
+        message: "The account with this email does not exist.",
+      });
+    }
+    await userService.update(req.body.fieldsValue);
+    const { dataValues } = await userService.findOne({ id: existingUser.id });
+    return res.status(200).send({
+      status: "OK",
+      user: {
+        id: dataValues.id,
+        email: dataValues.email,
+        contactName: dataValues.contactName,
+        billingAddress: dataValues.billingAddress,
+      },
+    });
+  } catch (error) {
+    console.log({ error });
+    return res.status(500).send({
+      status: "ERROR",
+      message: "There was problem updating customer.",
+    });
+  }
+};
 
 const getCustomers = async (req, res) => {
+ 
   try {
-    const page = req.query.page || 1;
-    const size = parseInt(req.query.size) || 3;
-    const search = req.query.search || '';
-
-    const skip = page * size - size;
-
-    const users = await userService.getAll();
-    const customers = (users.rows).filter( user => !user.isAdmin && (user.contactName).search(search) !== -1);
-
-    const result = customers.splice(skip, skip+size);
-   
-    const customerfilteredData = result.map( customer => {
-      const {id, email, contactName, billingAddress, isApproved} = customer;
+    const {page, size, title} = req.query;
+    var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+    const { limit, offset } = getPagination(page, size);
+    const { count, rows} = await userService.getAll(condition, limit, offset);
+    const customers = rows.map( row => {
+      const {id, email, contactName, billingAddress, isApproved} = row;
       return {
         id,
         email,
-        name:contactName,
-        address:billingAddress,
+        contactName,
+        billingAddress,
         isApproved
       };
-    });
+  });
+   const pagingData = getPagingData(count, customers, page, limit);
   res.status(200).send({
-    status: "OK",
-    customers:customerfilteredData, 
+    status: "OK", 
+    ...pagingData,
   });
     
   } catch (error) {
@@ -101,20 +127,54 @@ const approveCustomer = async(req, res) => {
       });
     }
 }
-export { create, getCustomers, approveCustomer };
+
+const deleteCustomer = async(req, res) => {
+
+  try {
+    const customerId = req.params.id;
+    await userService.del(customerId);
+  
+    return res.status(200).send({
+      status: "OK",
+      customerId, 
+    });
+      
+    } catch (error) {
+      console.log({ error });
+      return res.status(500).send({
+        status: "ERROR",
+        message: "There was problem deleting customer.",
+      });
+    }
+}
+
+const getPagination = (page, size) => {
+  const limit = size ? size : 3;
+  const offset = page ? (page-1) * limit : 0;
+  return { limit, offset };
+};
+
+const getPagingData = (total, customers, page, pageSize) => {
+  const current = page ? page : 0;
+  //const totalPage = Math.ceil(totalItems / pageSize); //TOTAL PAGES
+  return {
+    customers,
+    pagination:{
+      current,
+      pageSize,
+      total
+    }
+  }
+}
 
 
-// const getPagingData = (data, page, limit) => {
-//   const { count: totalItems, rows: tutorials } = data;
-//   const currentPage = page ? +page : 0;
-//   const totalPages = Math.ceil(totalItems / limit);
+export { 
+  create, 
+  getCustomers, 
+  approveCustomer,
+  deleteCustomer,
+  update 
+};
 
-//   return { totalItems, tutorials, totalPages, currentPage };
-// }
 
-// const getPagination = (page, size) => {
-//   const limit = size ? +size : 3;
-//   const offset = page ? page * limit : 0;
 
-//   return { limit, offset };
-// };

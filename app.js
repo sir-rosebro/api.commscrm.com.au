@@ -12,7 +12,8 @@ dotenv.config();
 app.use(
   cors({
     origin: "*",
-  })
+  }),
+  express.json()
 );
 
 // app.use((req, res, next) => {
@@ -21,7 +22,7 @@ app.use(
 //   next();
 // });
 
-app.use(express.json());
+//app.use(express.json());
 
 const { PORT } = process.env;
 

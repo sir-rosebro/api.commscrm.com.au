@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 const shouldLoggedIn = (req, res, next) => {
 
     const token = req.header('x-access-token');
-    console.log(token);
     if(!token) {
         res.status(401).json({
             status:'ERROR',
@@ -14,7 +13,6 @@ const shouldLoggedIn = (req, res, next) => {
         const decoded = jwt.verify(token, process.env.TOKEN_SECRECT); 
         const { id, email, isAdmin} = decoded;
         req.user = {id, email, isAdmin};
-        console.log(req.user);
         next();
     } catch(error) {
             console.log({ error });
